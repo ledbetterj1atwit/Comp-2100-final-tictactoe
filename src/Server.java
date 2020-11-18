@@ -127,5 +127,15 @@ public class Server
     	else if(playerWins[7] && board[0][2]==playerSymb && board[1][1]==playerSymb && board[2][0]==playerSymb) return true;
     	return false;
     }
+    
+    /**
+     * update the board with move as an index of sorts.
+     * @param move int 1-9
+     * @param symb symbol to set to
+     * @param board
+     */
+    public static void updateBoard(int move, char symb, char[][] board) {
+    	board[(move-(move%3))/3][(move%3)+1]=symb;
+    }
  }
 	// end class Server
