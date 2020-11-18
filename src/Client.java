@@ -37,10 +37,6 @@ public class Client
         String reset = "R";
         String end = "E";
         
-        int serverMove = 0;
-        int clientMove = 0;
-        String response = "";
-        String serverResponse = "";
         }
     
     public static void display(char[][] board) {
@@ -70,6 +66,10 @@ public class Client
     	wins[5] = (enemy>6) ? false : true;
     	wins[6] = (enemy==1 || enemy==5 || enemy==7) ? false : true;
     	wins[7] = (enemy==3 || enemy==5 || enemy==9) ? false : true;
+    }
+    
+    public static int checkWinner(boolean[] xWins, boolean oWins) {
+    	return 0; // TODO: implemnt me
     }
 
     }
