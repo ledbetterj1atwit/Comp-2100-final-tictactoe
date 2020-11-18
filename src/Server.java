@@ -1,3 +1,5 @@
+import java.net.ServerSocket ;
+import java.net.Socket ;
 
 /**
  * 
@@ -10,6 +12,7 @@
  * @version 1.0.0 2020-11-18 Initial implementation
  *
  */
+import java.io.*;
 public class Server
     {
 
@@ -18,9 +21,16 @@ public class Server
      *
      * @param args
      */
-    public static void main( String[] args ) {
+    public static void main( String[] args ) throws IOException{
         char[][] board = new char[3][3];
     	// Server is x since they go first
+        ServerSocket s = new ServerSocket(9991);
+        Socket s1 = s.accept();
+        
+        DataInputStream dInput = new DataInputStream (s1.getInputStream());
+        DataOutputStream dOutput = new DataOutputStream(s1.getOutputStream());
+        BufferedReader bF1 = new BufferedReader(new InputStreamReader(System.in));
+
 
     }
     

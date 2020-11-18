@@ -10,6 +10,8 @@
  * @version 1.0.0 2020-11-18 Initial implementation
  *
  */
+import java.net.*;
+import java.io.*;
 public class Client
     {
 
@@ -18,10 +20,13 @@ public class Client
      *
      * @param args
      */
-    public static void main( String[] args )
+    public static void main( String[] args ) throws IOException
         {
-        // TODO Auto-generated method stub
-
+        Socket s = new Socket("localhost", 9991);
+        
+        DataInputStream dInput = new DataInputStream (s.getInputStream());
+        DataOutputStream dOutput = new DataOutputStream(s.getOutputStream());
+        BufferedReader bF1 = new BufferedReader(new InputStreamReader(System.in));
         }
     
     public static void display(char[][] board) {
