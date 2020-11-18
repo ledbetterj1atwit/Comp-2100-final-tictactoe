@@ -37,6 +37,10 @@ public class Client
         String reset = "R";
         String end = "E";
         
+        int serverMove = 0;
+        int clientMove = 0;
+        String response = "";
+        String serverResponse = "";
         }
     
     public static void display(char[][] board) {
