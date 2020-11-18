@@ -50,7 +50,7 @@ public class Server
             System.out.println("Server will make the first move as X");
             serverMove = bF1.readLine();
             dOutput.writeUTF( serverMove );
-            
+            updateWins(Integer.parseInt( serverMove ), oWins);
             }
     }
     
