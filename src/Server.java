@@ -37,7 +37,21 @@ public class Server
         String reset = "R";
         String end = "E";
         
+        String serverMove = "";
+        String clientMove = "";
+        String response = "";
+        String clientResponse = "";
         
+        System.out.println("Ready to Play? Y for yes and N for no.");
+        clientResponse = dInput.readUTF();
+        response = bF1.readLine();
+        if((clientResponse.equals( yes )) && (response.contentEquals( yes )))
+            {
+            System.out.println("Server will make the first move as X");
+            serverMove = bF1.readLine();
+            dOutput.writeUTF( serverMove );
+            
+            }
     }
     
     public static void display(char[][] board) {
