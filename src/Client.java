@@ -47,22 +47,25 @@ public class Client
     }
     
     public static void init(char[][] board, boolean[] xWins, boolean oWins[]) {
-    	board[0][0] = '1';
-    	board[0][1] = '2';
-    	board[0][2] = '3';
-    	board[1][0] = '4';
-    	board[1][1] = '5';
-    	board[1][2] = '6';
-    	board[2][0] = '7';
-    	board[2][1] = '8';
-    	board[2][2] = '9';
+    	board = new char[][] {
+    			{'1','2','3'},
+    			{'4','5','6'},
+    			{'7','8','9'}
+    			};
     	for(int i=0; i<xWins.length;i++) {
     		xWins[i] = true;
     		oWins[i] = true;
     	}
     }
-    public static void updateWins(int enemy) {
-    	// TODO: implement this
+    public static void updateWins(int enemy, boolean[] wins) {
+    	wins[0] = (enemy%3==1) ? false : true;
+    	wins[1] = (enemy%3==2) ? false : true;
+    	wins[2] = (enemy%3==0) ? false : true;
+    	wins[3] = (enemy<4) ? false : true;
+    	wins[4] = (enemy>3 && enemy < 7) ? false : true;
+    	wins[5] = (enemy>6) ? false : true;
+    	wins[6] = (enemy==1 || enemy==5 || enemy==7) ? false : true;
+    	wins[7] = (enemy==3 || enemy==5 || enemy==9) ? false : true;
     }
 
     }
