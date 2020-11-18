@@ -51,6 +51,7 @@ public class Server
             serverMove = bF1.readLine();
             dOutput.writeUTF( serverMove );
             updateWins(Integer.parseInt( serverMove ), oWins);
+            clientMove = dInput.readUTF();
             }
     }
     
