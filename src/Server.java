@@ -76,8 +76,15 @@ public class Server
     		oWins[i] = true;
     	}
     }
-    public static void updateWins(int enemy) {
-    	// TODO: implement this
+    public static void updateWins(int enemy, boolean[] wins) {
+    	wins[0] = (enemy%3==1) ? false : true;
+    	wins[1] = (enemy%3==2) ? false : true;
+    	wins[2] = (enemy%3==0) ? false : true;
+    	wins[3] = (enemy<4) ? false : true;
+    	wins[4] = (enemy>3 && enemy < 7) ? false : true;
+    	wins[5] = (enemy>6) ? false : true;
+    	wins[6] = (enemy==1 || enemy==5 || enemy==7) ? false : true;
+    	wins[7] = (enemy==3 || enemy==5 || enemy==9) ? false : true;
     }
  }
 	// end class Server
