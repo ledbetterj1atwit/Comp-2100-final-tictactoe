@@ -30,8 +30,13 @@ public class Server
         DataInputStream dInput = new DataInputStream (s1.getInputStream());
         DataOutputStream dOutput = new DataOutputStream(s1.getOutputStream());
         BufferedReader bF1 = new BufferedReader(new InputStreamReader(System.in));
-
-
+        
+        String yes = "Y";
+        String no = "N";
+        String reset = "R";
+        String end = "E";
+        
+        
     }
     
     public static void display(char[][] board) {

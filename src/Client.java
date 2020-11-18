@@ -23,10 +23,17 @@ public class Client
     public static void main( String[] args ) throws IOException
         {
         Socket s = new Socket("localhost", 9991);
+        System.out.println("Connection Established! Server is X and Client is O");
         
         DataInputStream dInput = new DataInputStream (s.getInputStream());
         DataOutputStream dOutput = new DataOutputStream(s.getOutputStream());
         BufferedReader bF1 = new BufferedReader(new InputStreamReader(System.in));
+        
+        String yes = "Y";
+        String no = "N";
+        String reset = "R";
+        String end = "E";
+        
         }
     
     public static void display(char[][] board) {
