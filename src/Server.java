@@ -42,11 +42,41 @@ public class Server
         if((clientResponse.equals( yes )) && (response.contentEquals( yes )))
             {
             System.out.println("Server will make the first move as X");
-            serverMove = bF1.readLine();
-            dOutput.writeUTF( serverMove );
-            updateWins(Integer.parseInt( serverMove ), oWins);
-            clientMove = dInput.readUTF();
+            while(true)
+                {
+                serverMove = bF1.readLine();
+                dOutput.writeUTF( serverMove );
+                updateBoard(Integer.parseInt( serverMove ), 'X', board);
+                updateWins(Integer.parseInt( serverMove ), oWins);
+                if(checkWin(board, xWins, 'X'))
+                    {
+                    System.out.println("X has won! Do you wish to play again?");
+                    //not quite sure how to reset the loop
+                    }
+                checkTie(xWins, oWins);
+                clientMove = dInput.readUTF();
+                updateBoard(Integer.parseInt( clientMove ), 'O', board);
+                updateWins(Integer.parseInt( clientMove ), xWins);
+                if(checkWin(board, oWins, 'O'))
+                    {
+                    System.out.println("X has won! Do you wish to play again?");
+                    //not quite sure how to reset the loop
+                    }
+                response = bF1.readLine();
+                clientResponse = dInput.readUTF();
+                if(response.equals( end ) || clientResponse.equals( end ))
+                    {
+                    System.out.println("This session of TicTacToe has ended");
+                    break;
+                    }
+                }
+            
+            
             }
+        dInput.close();
+        dOutput.close();
+        s.close();
+        s1.close();
     }
     
     /**
