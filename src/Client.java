@@ -45,19 +45,19 @@ public class Client
             System.out.println("Server will make the first move as X");
             while(true)
                 {
-                serverMove = bF1.readLine();
+                clientMove = bF1.readLine();
                 dOutput.writeUTF( serverMove );
-                updateBoard(Integer.parseInt( serverMove ), 'X', board);
-                updateWins(Integer.parseInt( serverMove ), oWins);
+                updateBoard(Integer.parseInt( clientMove ), 'O', board);
+                updateWins(Integer.parseInt( clientMove ), xWins);
                 if(checkWin(board, xWins, 'X'))
                     {
                     System.out.println("X has won! Do you wish to play again?");
                     //not quite sure how to reset the loop
                     }
-                checkTie(xWins, oWins);
-                clientMove = dInput.readUTF();
-                updateBoard(Integer.parseInt( clientMove ), 'O', board);
-                updateWins(Integer.parseInt( clientMove ), xWins);
+                checkTie(oWins, xWins);
+                serverMove = dInput.readUTF();
+                updateBoard(Integer.parseInt( serverMove ), 'X', board);
+                updateWins(Integer.parseInt( serverMove ), oWins);
                 if(checkWin(board, oWins, 'O'))
                     {
                     System.out.println("X has won! Do you wish to play again?");
