@@ -49,7 +49,9 @@ public class Server {
 		if ((clientResponse.equals(yes)) && (response.contentEquals(yes))) {
 			boolean playing = true;
 			while (playing) { // Game loop
-				System.out.println("Server will make the first move as X. Enter \"E\" to exit on your turn.");
+				System.out.printf("Server will make the first move as X.%n"
+						+ "Enter a number that corisponds to the one on the board to place your symbol there%n"
+						+ "Enter \"E\" to exit on your turn.%n");
 				init();
 				display();
 				int checkState = 0;
