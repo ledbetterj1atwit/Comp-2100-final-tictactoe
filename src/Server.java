@@ -38,8 +38,6 @@ public class Server {
 
 		
 
-		String serverMove = "";
-		String clientMove = "";
 		String response = "";
 		String clientResponse = "";
 
@@ -56,11 +54,15 @@ public class Server {
 				display();
 				int checkState = 0;
 				while (true) { // round loop
+					//automatic final move
+					if(!autoFinalMove(dOutput)) {
 					// x turn
-					if(!xTurn(bF1, dOutput)) {
-						playing = false;
-						break;
+						if(!xTurn(bF1, dOutput)) {
+							playing = false;
+							break;
+						}
 					}
+					else System.out.print("");
 					checkState = check('X', bF1, dInput, dOutput);
 					if(checkState == 1) {
 						break;
@@ -84,7 +86,7 @@ public class Server {
 					}
 				}
 			}
-			System.out.printf("Thanks for playing%n", args);
+			System.out.printf("Thanks for playing%n");
 
 		}
 		dInput.close();
@@ -131,8 +133,8 @@ public class Server {
 		wins[3] = (move < 4) ? false : wins[3];
 		wins[4] = (move > 3 && move < 7) ? false : wins[4];
 		wins[5] = (move > 6) ? false : wins[5];
-		wins[6] = (move == 1 || move == 5 || move == 7) ? false : wins[6];
-		wins[7] = (move == 3 || move == 5 || move == 9) ? false : wins[7];
+		wins[6] = (move == 1 || move == 5 || move == 9) ? false : wins[6];
+		wins[7] = (move == 3 || move == 5 || move == 7) ? false : wins[7];
 	}
 
 	/**
@@ -227,7 +229,15 @@ public class Server {
 	 */
 	public static boolean xTurn(BufferedReader bF1, DataOutputStream dOutput) throws IOException {
 		System.out.printf("X's Turn: ");
-		String serverMove = bF1.readLine(); // Get player input
+		String serverMove = "";
+		boolean valid = false;
+		while(!valid) {
+			serverMove = bF1.readLine();
+			if(serverMove.contentEquals(end) || isValidMove(Integer.parseInt(serverMove))) {
+				valid = true;
+			}
+			else System.out.printf("move is not valid%nX's Turn: ");
+		}
 		if (serverMove.contentEquals(end)) {
 			dOutput.writeUTF(serverMove);
 			return false;
@@ -294,6 +304,41 @@ public class Server {
 			}
 		}
 		return 0;
+	}
+	
+	/**
+	 * See if there is only one move that can be made and if so, make it.
+	 * @param dOutput
+	 * @return true if final move
+	 * @throws IOException
+	 */
+	public static boolean autoFinalMove(DataOutputStream dOutput) throws IOException {
+		int count = 0;
+		int hole = 0;
+		for(int i = 0; i < 3; i++) {
+			for(int j = 0; j < 3; j++) {
+				if(board[i][j] == 'X' || board[i][j] == 'O') count ++;
+				else hole = (i*3)+(j+1);
+			}
+		}
+		if(count != 8) return false;
+		System.out.printf("X's Turn: %d%n", hole);
+		dOutput.writeUTF(String.format("%d", hole));  // Send move
+		updateBoard(hole, 'X'); // update
+		updateWins(hole, oWins);
+		updateWins(hole, xWins);
+		return true;
+	}
+	
+	/**
+	 * Check if move is valid.
+	 * @param move
+	 * @return true if move is valid
+	 */
+	public static boolean isValidMove(int move) {
+		if(board[(move % 3 == 0) ? (move / 3) - 1 : move / 3][(move + 2) % 3] == 'X') return false;
+		else if(board[(move % 3 == 0) ? (move / 3) - 1 : move / 3][(move + 2) % 3] == 'O') return false;
+		return true; 
 	}
 }
 // end class Server

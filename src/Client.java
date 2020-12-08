@@ -34,8 +34,6 @@ public class Client {
 		DataOutputStream dOutput = new DataOutputStream(s.getOutputStream());
 		BufferedReader bF1 = new BufferedReader(new InputStreamReader(System.in));
 
-		String serverMove = "";
-		String clientMove = "";
 		String response = "";
 		String serverResponse = "";
 
@@ -47,7 +45,9 @@ public class Client {
 		if ((serverResponse.equals(yes)) && (response.contentEquals(yes))) {
 			boolean playing = true;
 			while (playing) { // game loop
-				System.out.println("Server will make the first move as X. Enter \"E\" to exit on your turn.");
+				System.out.printf("Server will make the first move as X.%n"
+						+ "Enter a number that corisponds to the one on the board to place your symbol there%n"
+						+ "Enter \"E\" to exit on your turn.%n");
 				init();
 				display();
 				int checkState = 0;
@@ -80,7 +80,7 @@ public class Client {
 					}
 				}
 			}
-			System.out.printf("Thanks for playing%n", args);
+			System.out.printf("Thanks for playing%n");
 
 		}
 		dInput.close();
@@ -134,8 +134,8 @@ public class Client {
 		wins[3] = (move < 4) ? false : wins[3];
 		wins[4] = (move > 3 && move < 7) ? false : wins[4];
 		wins[5] = (move > 6) ? false : wins[5];
-		wins[6] = (move == 1 || move == 5 || move == 7) ? false : wins[6];
-		wins[7] = (move == 3 || move == 5 || move == 9) ? false : wins[7];
+		wins[6] = (move == 1 || move == 5 || move == 9) ? false : wins[6];
+		wins[7] = (move == 3 || move == 5 || move == 7) ? false : wins[7];
 	}
 
 	/**
@@ -235,7 +235,15 @@ public class Client {
 	 */
 	public static boolean oTurn(BufferedReader bF1, DataOutputStream dOutput) throws IOException {
 		System.out.printf("O's Turn: ");
-		String clientMove = bF1.readLine(); // Get player input
+		String clientMove = "";
+		boolean valid = false;
+		while(!valid) {
+			clientMove = bF1.readLine(); // Get player input
+			if(clientMove.contentEquals(end) || isValidMove(Integer.parseInt(clientMove))) {
+				valid = true;
+			}
+			else System.out.printf("move is not valid%nO's Turn: "); 
+		}
 		if (clientMove.contentEquals(end)) {
 			dOutput.writeUTF(clientMove);
 			return false;
@@ -303,5 +311,17 @@ public class Client {
 		}
 		return 0;
 	}
+	
+	/**
+	 * Check if move is valid.
+	 * @param move
+	 * @return true if move is valid
+	 */
+	public static boolean isValidMove(int move) {
+		if(board[(move % 3 == 0) ? (move / 3) - 1 : move / 3][(move + 2) % 3] == 'X') return false;
+		else if(board[(move % 3 == 0) ? (move / 3) - 1 : move / 3][(move + 2) % 3] == 'O') return false;
+		return true; 
+	}
+	
 }
 // end class Client
