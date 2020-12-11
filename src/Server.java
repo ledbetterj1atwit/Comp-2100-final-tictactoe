@@ -10,13 +10,13 @@ import java.io.*;
 import java.net.*;
 
 public class Server {
-	static final String yes = "Y";
+	static final String yes = "Y"; // Constants for user input.
 	static final String no = "N";
 	static final String reset = "R";
 	static final String end = "E";
 	
 	static char[][] board = new char[3][3];// Server is x since they go first
-	static boolean[] xWins = new boolean[8];                                 
+	static boolean[] xWins = new boolean[8];  // Arrays representing each player's possible win states.                               
 	static boolean[] oWins = new boolean[8];
 	
 	/**
@@ -29,12 +29,12 @@ public class Server {
 		
 		
 
-		ServerSocket s = new ServerSocket(9991);
+		ServerSocket s = new ServerSocket(9991); // Start server and wait for client.
 		Socket s1 = s.accept();
 
-		DataInputStream dInput = new DataInputStream(s1.getInputStream());
-		DataOutputStream dOutput = new DataOutputStream(s1.getOutputStream());
-		BufferedReader bF1 = new BufferedReader(new InputStreamReader(System.in));
+		DataInputStream dInput = new DataInputStream(s1.getInputStream());  // from client.
+		DataOutputStream dOutput = new DataOutputStream(s1.getOutputStream()); // to client.
+		BufferedReader bF1 = new BufferedReader(new InputStreamReader(System.in)); // from user.
 
 		
 
@@ -46,15 +46,15 @@ public class Server {
 		response = bF1.readLine();
 		dOutput.writeUTF(response);
 		clientResponse = dInput.readUTF();
-		if ((clientResponse.equals(yes)) && (response.contentEquals(yes))) {
+		if ((clientResponse.equals(yes)) && (response.contentEquals(yes))) { // Wait for both users to agree to play.
 			boolean playing = true;
 			while (playing) { // Game loop
-				System.out.printf("Server will make the first move as X.%n"
+				System.out.printf("Server will make the first move as X.%n" // How 2 play!
 						+ "Enter a number that corisponds to the one on the board to place your symbol there%n"
 						+ "Enter \"E\" to exit on your turn.%n");
-				init();
-				display();
-				int checkState = 0;
+				init(); // Set up board and wins
+				display(); // display the (empty) board
+				int checkState = 0; // look at check() for what this is used for.
 				while (true) { // round loop
 					//automatic final move
 					if(!autoFinalMove(dOutput)) {
@@ -64,17 +64,17 @@ public class Server {
 							break;
 						}
 					}
-					else System.out.print("");
+//					else System.out.print(""); // this was for debugging iirc.
 					checkState = check('X', bF1, dInput, dOutput);
-					if(checkState == 1) {
+					if(checkState == 1) { // Round end(someone won)
 						break;
 					}
-					else if(checkState == -1) {
+					else if(checkState == -1) { // Game end(someone quit)
 						playing = false;
 						break;
 					}
 					// o turn
-					if(!oTurn(dInput)) {
+					if(!oTurn(dInput)) {  // handle o(client)'s turn
 						playing = false;
 						break;
 					}
@@ -88,10 +88,10 @@ public class Server {
 					}
 				}
 			}
-			System.out.printf("Thanks for playing%n");
+			System.out.printf("Thanks for playing%n"); // Exit message
 
 		}
-		dInput.close();
+		dInput.close(); // Close the things before exit.
 		dOutput.close();
 		s.close();
 		s1.close();
@@ -111,7 +111,7 @@ public class Server {
 	 * Reset board xWins and oWins to initial state.
 	 */
 	public static void init() {
-		for (int i = 0; i < board.length; i++) {
+		for (int i = 0; i < board.length; i++) { // Fill each space with its number(1-9)
 			for (int j = 0; j < board[i].length; j++) {
 				board[i][j] = (char) ((j + 1 + (3 * i)) + 48);
 			}
@@ -129,14 +129,14 @@ public class Server {
 	 * @param wins wins possible by player
 	 */
 	public static void updateWins(int move, boolean[] wins) {
-		wins[0] = (move % 3 == 1) ? false : wins[0];
-		wins[1] = (move % 3 == 2) ? false : wins[1];
-		wins[2] = (move % 3 == 0) ? false : wins[2];
-		wins[3] = (move < 4) ? false : wins[3];
-		wins[4] = (move > 3 && move < 7) ? false : wins[4];
-		wins[5] = (move > 6) ? false : wins[5];
-		wins[6] = (move == 1 || move == 5 || move == 9) ? false : wins[6];
-		wins[7] = (move == 3 || move == 5 || move == 7) ? false : wins[7];
+		wins[0] = (move % 3 == 1) ? false : wins[0]; // Column 1 win
+		wins[1] = (move % 3 == 2) ? false : wins[1]; // Column 2 win
+		wins[2] = (move % 3 == 0) ? false : wins[2]; // Column 3 win
+		wins[3] = (move < 4) ? false : wins[3]; // Row 1 win
+		wins[4] = (move > 3 && move < 7) ? false : wins[4]; // Row 2 win
+		wins[5] = (move > 6) ? false : wins[5]; // Row 3 win
+		wins[6] = (move == 1 || move == 5 || move == 9) ? false : wins[6]; // \ diagonal
+		wins[7] = (move == 3 || move == 5 || move == 7) ? false : wins[7]; // / diagonal
 	}
 
 	/**
@@ -156,7 +156,7 @@ public class Server {
 			if (b == true)
 				opponentLost = false;
 
-		return lost && opponentLost;
+		return lost && opponentLost; // if you and opponent have no possibility of winning its a tie.
 	}
 
 	/**
@@ -168,21 +168,21 @@ public class Server {
 	 * @return
 	 */
 	public static boolean checkWin(char[][] board, boolean[] playerWins, char playerSymb) {
-		if (playerWins[0] && board[0][0] == playerSymb && board[1][0] == playerSymb && board[2][0] == playerSymb)
+		if (playerWins[0] && board[0][0] == playerSymb && board[1][0] == playerSymb && board[2][0] == playerSymb) // col 1
+			return true; // Note the short circut using wins to make check faster.
+		else if (playerWins[1] && board[0][1] == playerSymb && board[1][1] == playerSymb && board[2][1] == playerSymb) // col 2
 			return true;
-		else if (playerWins[1] && board[0][1] == playerSymb && board[1][1] == playerSymb && board[2][1] == playerSymb)
+		else if (playerWins[2] && board[0][2] == playerSymb && board[1][2] == playerSymb && board[2][2] == playerSymb) // col 3
 			return true;
-		else if (playerWins[2] && board[0][2] == playerSymb && board[1][2] == playerSymb && board[2][2] == playerSymb)
+		else if (playerWins[3] && board[0][0] == playerSymb && board[0][1] == playerSymb && board[0][2] == playerSymb) // row 1
 			return true;
-		else if (playerWins[3] && board[0][0] == playerSymb && board[0][1] == playerSymb && board[0][2] == playerSymb)
+		else if (playerWins[4] && board[1][0] == playerSymb && board[1][1] == playerSymb && board[1][2] == playerSymb) // row 2
 			return true;
-		else if (playerWins[4] && board[1][0] == playerSymb && board[1][1] == playerSymb && board[1][2] == playerSymb)
+		else if (playerWins[5] && board[2][0] == playerSymb && board[2][1] == playerSymb && board[2][2] == playerSymb) // row 3
 			return true;
-		else if (playerWins[5] && board[2][0] == playerSymb && board[2][1] == playerSymb && board[2][2] == playerSymb)
+		else if (playerWins[6] && board[0][0] == playerSymb && board[1][1] == playerSymb && board[2][2] == playerSymb) // diag \
 			return true;
-		else if (playerWins[6] && board[0][0] == playerSymb && board[1][1] == playerSymb && board[2][2] == playerSymb)
-			return true;
-		else if (playerWins[7] && board[0][2] == playerSymb && board[1][1] == playerSymb && board[2][0] == playerSymb)
+		else if (playerWins[7] && board[0][2] == playerSymb && board[1][1] == playerSymb && board[2][0] == playerSymb) // diag /
 			return true;
 		return false;
 	}
@@ -194,8 +194,10 @@ public class Server {
 	 * @param symb  symbol to set to
 	 */
 	public static void updateBoard(int move, char symb) {
-		board[(move % 3 == 0) ? (move / 3) - 1 : move / 3][(move + 2) % 3] = symb;
-		display();
+		board[(move % 3 == 0) ? (move / 3) - 1 : move / 3][(move + 2) % 3] = symb; // this is complicated.
+		// (move % 3 == 0) ? (move /3) -1 : move / 3  handles the row [1,2,4,5,7,8]/3 gives correct row and [3,6,9]/3 - 1 gives correct row so need to handle differently depending on if idx%3 is 0 or not.
+		// (move + 2) % 3 handles the column 
+		display(); // Display the board when called.
 	}
 	
 	/**
@@ -233,14 +235,14 @@ public class Server {
 		System.out.printf("X's Turn: ");
 		String serverMove = "";
 		boolean valid = false;
-		while(!valid) {
+		while(!valid) { // Get a move from user and check its valid(or a quit)
 			serverMove = bF1.readLine();
 			if(serverMove.contentEquals(end) || isValidMove(Integer.parseInt(serverMove))) {
 				valid = true;
 			}
-			else System.out.printf("move is not valid%nX's Turn: ");
+			else System.out.printf("move is not valid%nX's Turn: "); // Not valid? try again...
 		}
-		if (serverMove.contentEquals(end)) {
+		if (serverMove.contentEquals(end)) { // End when user says to end
 			dOutput.writeUTF(serverMove);
 			return false;
 		}
@@ -263,7 +265,7 @@ public class Server {
 	public static int check(char playerChar, BufferedReader bF1, DataInputStream dInput, DataOutputStream dOutput) throws IOException {
 		String response;
 		boolean[] playerWins, opponentWins;
-		if (playerChar == 'X') {
+		if (playerChar == 'X') { // Check for whom?
 			playerWins = xWins;
 			opponentWins = oWins;
 		}
@@ -272,40 +274,40 @@ public class Server {
 			opponentWins = xWins;
 		}
 		
-		if (checkWin(board, playerWins, playerChar)) { // check client win
+		if (checkWin(board, playerWins, playerChar)) { // check win state
 			System.out.printf("%c has won! Do you wish to play again?(Y/N)%n", playerChar);
 			if (!bF1.readLine().contentEquals(yes)) {
 				dOutput.writeUTF(end);
-				return -1;
+				return -1; // Quit if end.
 			} 
 			else {
-				dOutput.writeUTF(reset);
+				dOutput.writeUTF(reset); // Reset for wins
 				response = dInput.readUTF();
-				if (response.contentEquals(end)) {
+				if (response.contentEquals(end)) { // Handle unexpected quit.
 					System.out.printf("%nOther player quit!%n");
 					return -1;
 				}
-				return 1;
+				return 1; // End round for a win
 			}
 		} 
 		else if (checkTie(playerWins, opponentWins)) { // check tie
 			System.out.println("Its a tie! Do you wish to play again?(Y/N)");
 			if (!bF1.readLine().contentEquals(yes)) {
 				dOutput.writeUTF(end);
-				return -1;
+				return -1; // end handle
 				
 			} 
 			else {
-				dOutput.writeUTF(reset);
+				dOutput.writeUTF(reset); // reset to continue
 				response = dInput.readUTF();
 				if (response.contentEquals(end)) {
 					System.out.printf("%nOther player quit!%n");
-					return -1;
+					return -1; // player quit
 				}
-				return 1;
+				return 1; // round end
 			}
 		}
-		return 0;
+		return 0; // Nothing important happened. Continue game.
 	}
 	
 	/**
@@ -317,13 +319,13 @@ public class Server {
 	public static boolean autoFinalMove(DataOutputStream dOutput) throws IOException {
 		int count = 0;
 		int hole = 0;
-		for(int i = 0; i < 3; i++) {
+		for(int i = 0; i < 3; i++) { // Find if there is only one more move left to make
 			for(int j = 0; j < 3; j++) {
 				if(board[i][j] == 'X' || board[i][j] == 'O') count ++;
 				else hole = (i*3)+(j+1);
 			}
 		}
-		if(count != 8) return false;
+		if(count != 8) return false; // exit if not last move
 		System.out.printf("X's Turn: %d%n", hole);
 		dOutput.writeUTF(String.format("%d", hole));  // Send move
 		updateBoard(hole, 'X'); // update

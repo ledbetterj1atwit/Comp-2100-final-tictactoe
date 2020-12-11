@@ -10,7 +10,7 @@ import java.net.*;
 import java.io.*;
 
 
-public class Client {
+public class Client { // This file is mostly the same as Server.java. Check there for more info.
 	
 	static final String yes = "Y"; // constants
 	static final String  no = "N";
